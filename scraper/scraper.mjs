@@ -4,6 +4,16 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Load .env if present
+const envPath = path.resolve(__dirname, '.env');
+if (fs.existsSync(envPath)) {
+  for (const line of fs.readFileSync(envPath, 'utf8').split('\n')) {
+    const m = line.match(/^([A-Z_]+)=(.*)$/);
+    if (m) process.env[m[1]] ??= m[2];
+  }
+}
+
 const DRY_RUN = process.argv.includes('--dry-run');
 const ONLY_SOURCE = process.argv.find(a => a.startsWith('--source='))?.split('=')[1];
 const WORKER_URL = process.env.WORKER_URL || 'http://localhost:8787';
