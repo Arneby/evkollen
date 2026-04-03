@@ -84,6 +84,28 @@ models:
         filter:
           exclude: ["50"]          # Neue Klasse
 
+  - id: lr-disco-sport-p300e
+    make: Land Rover
+    model: Discovery Sport
+    variant: P300e
+    powertrain: phev
+    year: 2025
+    sources:
+      coches_net:
+        make_id: 24
+        model_id: 1134
+        filter:
+          include: ["P300e"]
+        version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
+        version_filter: ["R-Dynamic", "Dynamic HSE", "Autobiography"]
+      wayke:
+        manufacturer: "Land Rover"
+        model_series: "Discovery Sport"
+        fuel_type: "Bensin+El"
+        mileage_max: 500
+        version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
+        version_filter: ["R-Dynamic", "Dynamic HSE", "Autobiography"]
+
   - id: vw-id4
     make: Volkswagen
     model: ID.4
