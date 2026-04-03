@@ -57,7 +57,7 @@ async function fetchPage(cn, page) {
   return res.json();
 }
 
-export async function scrape(model, cn) {
+export async function scrape(model, cn, rates) {
   const allListings = [];
   let page = 1;
 
@@ -100,6 +100,7 @@ export async function scrape(model, cn) {
         km: item.km ?? null,
         price: item.price?.amount ?? null,
         price_financed: item.price?.financedAmount ?? null,
+        price_eur: item.price?.amount ?? null,
         currency: 'EUR',
         image_url: imageUrl,
         province: item.mainProvince ?? null,

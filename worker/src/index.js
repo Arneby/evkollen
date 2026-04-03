@@ -72,26 +72,26 @@ async function handleIngest(request, env) {
 
     if (!existing) {
       await env.DB.prepare(
-        'INSERT OR IGNORE INTO listings (id, model_id, source, url, title, version, year, km, price, price_financed, currency, image_url, province, dealer_name, is_professional, first_seen, last_seen) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+        'INSERT OR IGNORE INTO listings (id, model_id, source, url, title, version, year, km, price, price_financed, price_eur, currency, image_url, province, dealer_name, is_professional, first_seen, last_seen) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
       ).bind(
         l.id, l.model_id, l.source, l.url, l.title ?? null, l.version ?? null,
-        l.year ?? null, l.km ?? null, l.price ?? null, l.price_financed ?? null, l.currency ?? 'EUR', l.image_url ?? null,
+        l.year ?? null, l.km ?? null, l.price ?? null, l.price_financed ?? null, l.price_eur ?? null, l.currency ?? 'EUR', l.image_url ?? null,
         l.province ?? null, l.dealer_name ?? null,
         l.is_professional ?? 1, today, today
       ).run();
       inserted++;
     } else {
       await env.DB.prepare(
-        'UPDATE listings SET last_seen = ?, km = ?, price = ?, price_financed = ?, image_url = ?, title = ?, version = ? WHERE id = ?'
-      ).bind(today, l.km ?? null, l.price ?? null, l.price_financed ?? null, l.image_url ?? null, l.title ?? null, l.version ?? null, existing.id).run();
+        'UPDATE listings SET last_seen = ?, km = ?, price = ?, price_financed = ?, price_eur = ?, image_url = ?, title = ?, version = ? WHERE id = ?'
+      ).bind(today, l.km ?? null, l.price ?? null, l.price_financed ?? null, l.price_eur ?? null, l.image_url ?? null, l.title ?? null, l.version ?? null, existing.id).run();
       updated++;
     }
 
     if (l.price) {
       const listingId = existing ? existing.id : l.id;
       await env.DB.prepare(
-        'INSERT INTO price_snapshots (listing_id, price, km, currency, scraped_at) VALUES (?, ?, ?, ?, ?)'
-      ).bind(listingId, l.price, l.km ?? null, l.currency ?? 'EUR', now).run();
+        'INSERT INTO price_snapshots (listing_id, price, price_eur, km, currency, scraped_at) VALUES (?, ?, ?, ?, ?, ?)'
+      ).bind(listingId, l.price, l.price_eur ?? null, l.km ?? null, l.currency ?? 'EUR', now).run();
     }
   }
 

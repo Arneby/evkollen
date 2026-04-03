@@ -22,7 +22,7 @@ async function fetchPage(w, offset = 0) {
   return res.json();
 }
 
-export async function scrape(model, w) {
+export async function scrape(model, w, rates) {
   const allListings = [];
   let offset = 0;
 
@@ -68,6 +68,7 @@ export async function scrape(model, w) {
         km: doc.mileage ?? null,
         price: doc.price ?? null,
         price_financed: null,
+        price_eur: doc.price ? Math.round(doc.price / (rates?.SEK ?? 11.5)) : null,
         currency: 'SEK',
         image_url: imageUrl,
         province: null,

@@ -109,8 +109,7 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
         return;
       }
 
-      const fullId = `coches_net:${id}`;
-      const res = await fetch(`${WORKER_URL}/listing?id=${encodeURIComponent(fullId)}`);
+      const res = await fetch(`${WORKER_URL}/listing?id=${encodeURIComponent(id)}`);
       const json = await res.json();
 
       if (!res.ok || !json.listing) {

@@ -163,17 +163,22 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
       { id: 'vw-id4',                 label: 'VW ID.4' },
     ];
 
+    const SOURCE_META = {
+      coches_net: { flag: '🇪🇸' },
+      wayke:      { flag: '🇸🇪' },
+    };
+
     let allData = {};
     let activeModel = MODELS[0].id;
-    let sortCol = 'price';
+    let sortCol = 'price_eur';
     let sortDir = 'asc';
 
     const COLS = [
-      { key: 'price',      label: 'Pris',   cls: 'col-price' },
-      { key: 'year',       label: 'År',     cls: 'col-year' },
-      { key: 'km',         label: 'Km',     cls: 'col-km', thClass: 'num' },
-      { key: 'first_seen', label: 'Sedd',   cls: 'col-seen' },
-      { key: 'last_seen',  label: 'Senast', cls: 'col-lastseen' },
+      { key: 'price_eur',  label: 'Pris (€)', cls: 'col-price' },
+      { key: 'year',       label: 'År',        cls: 'col-year' },
+      { key: 'km',         label: 'Km',        cls: 'col-km', thClass: 'num' },
+      { key: 'first_seen', label: 'Sedd',      cls: 'col-seen' },
+      { key: 'last_seen',  label: 'Senast',    cls: 'col-lastseen' },
     ];
 
     function fmt(n) {
@@ -202,7 +207,7 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
     }
 
     function renderStats(listings) {
-      const prices = listings.map(l => l.price).filter(Boolean);
+      const prices = listings.map(l => l.price_eur ?? l.price).filter(Boolean);
       const kms = listings.map(l => l.km).filter(v => v != null);
       const avg = arr => arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : null;
       document.getElementById('stats').innerHTML = [
@@ -231,8 +236,8 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
             </tr></thead>
             <tbody>
               ${sorted.map(l => `<tr>
-                <td title="${l.title}"><a class="ad-link" href="/annons?id=${l.id.split(':')[1]}">${l.title}</a></td>
-                <td class="price">${'€' + fmt(l.price)}</td>
+                <td title="${l.title}"><a class="ad-link" href="/annons?id=${encodeURIComponent(l.id)}">${SOURCE_META[l.source]?.flag ?? ''} ${l.title}</a></td>
+                <td class="price">€${fmt(l.price_eur ?? l.price)}</td>
                 <td><span class="year-badge">${l.year ?? '–'}</span></td>
                 <td class="muted num">${fmtKm(l.km)}</td>
                 <td class="muted">${fmtDate(l.first_seen)}</td>

@@ -33,11 +33,21 @@ async function sendToWorker(listings) {
   console.log(`  Worker: ${json.inserted} inserted, ${json.updated} updated`);
 }
 
+async function fetchEurRates() {
+  const res = await fetch('https://api.frankfurter.app/latest?from=EUR&to=SEK');
+  if (!res.ok) throw new Error(`Frankfurter API ${res.status}`);
+  const data = await res.json();
+  return { SEK: data.rates.SEK, EUR: 1 };
+}
+
 async function main() {
   const config = yaml.load(fs.readFileSync(path.resolve(__dirname, '../config/models.yaml'), 'utf8'));
   console.log(`evkollen scraper — ${DRY_RUN ? 'DRY RUN' : 'LIVE'}`);
   if (ONLY_SOURCE) console.log(`Source filter: ${ONLY_SOURCE}`);
-  console.log(`Models: ${config.models.length}\n`);
+  console.log(`Models: ${config.models.length}`);
+
+  const rates = await fetchEurRates();
+  console.log(`EUR/SEK: ${rates.SEK}\n`);
 
   for (let i = 0; i < config.models.length; i++) {
     const model = config.models[i];
@@ -50,7 +60,7 @@ async function main() {
       if (ONLY_SOURCE && sourceName !== ONLY_SOURCE) continue;
       try {
         const scrape = await getSourceScraper(sourceName);
-        const listings = await scrape(model, sourceConfig);
+        const listings = await scrape(model, sourceConfig, rates);
         allListings.push(...listings);
       } catch (err) {
         console.error(`  [${sourceName}] Error: ${err.message}`);
