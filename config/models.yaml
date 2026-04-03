@@ -31,7 +31,8 @@ models:
       model_id: 994
       filter:
         include: ["P300e"]
-      version_keywords: ["Autobiography", "R-Dynamic SE", "R-Dynamic S", "Dynamic SE", "Dynamic", "SE", "S"]
+      version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
+      version_filter: ["R-Dynamic", "Dynamic HSE", "Autobiography"]  # bara dessa trim-nivåer
 
   - id: citroen-ec5-aircross-ev
     make: Citroën

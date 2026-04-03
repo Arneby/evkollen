@@ -96,6 +96,9 @@ async function scrapeModel(model) {
       const versionKeywords = model.coches_net.version_keywords || [];
       const version = versionKeywords.find(k => item.title.toLowerCase().includes(k.toLowerCase())) ?? null;
 
+      const versionFilter = model.coches_net.version_filter || [];
+      if (versionFilter.length && (!version || !versionFilter.some(f => version.toLowerCase().startsWith(f.toLowerCase())))) continue;
+
       allListings.push({
         id: `coches_net:${item.id}`,
         model_id: model.id,
