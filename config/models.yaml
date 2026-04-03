@@ -7,7 +7,8 @@ models:
     coches_net:
       make_id: 1404
       model_id: 1336
-      variant_keyword: "More"   # post-process filter på annonstitel
+      filter:
+        include: ["More"]
 
   - id: lynk-08-phev-more
     make: Lynk & Co
@@ -17,7 +18,8 @@ models:
     coches_net:
       make_id: 1404
       model_id: 1625
-      variant_keyword: "More"
+      filter:
+        include: ["More"]
 
   - id: rr-evoque-p300e
     make: Land Rover
@@ -27,4 +29,39 @@ models:
     coches_net:
       make_id: 24
       model_id: 994
-      variant_keyword: "P300e"
+      filter:
+        include: ["P300e"]
+      version_keywords: ["Autobiography", "R-Dynamic SE", "R-Dynamic S", "Dynamic SE", "Dynamic", "SE", "S"]
+
+  - id: citroen-ec5-aircross-ev
+    make: Citroën
+    model: eC5 Aircross
+    variant: EV
+    powertrain: bev
+    coches_net:
+      make_id: 11
+      model_id: 1668
+
+  - id: bmw-ix3-g08
+    make: BMW
+    model: iX3
+    variant: G08
+    powertrain: bev
+    coches_net:
+      make_id: 7
+      model_id: 1324
+      year_to: 2025
+      filter:
+        include: ["M Sport"]
+        exclude: ["50 xDrive"]   # Neue Klasse
+
+  - id: vw-id4
+    make: Volkswagen
+    model: ID.4
+    variant: ""
+    powertrain: bev
+    coches_net:
+      make_id: 47
+      model_id: 1334
+      filter:
+        include: ["Pro", "GTX"]

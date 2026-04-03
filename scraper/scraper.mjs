@@ -52,7 +52,7 @@ function buildRequestBody(cn, page = 1) {
       sellerTypeId: 0,
       transmissionTypeId: null,
       vehicles: [{ makeId: cn.make_id, modelId: cn.model_id, model: '', version: '' }],
-      year: { from: null, to: null },
+      year: { from: null, to: cn.year_to ?? null },
     },
   };
 }
@@ -82,19 +82,27 @@ async function scrapeModel(model) {
     const today = new Date().toISOString().split('T')[0];
     for (const item of items) {
       // Filter by variant keyword if set (e.g. "More")
-      const variantKeyword = model.coches_net.variant_keyword;
-      if (variantKeyword && !item.title.toLowerCase().includes(variantKeyword.toLowerCase())) continue;
+      const filter = model.coches_net.filter || {};
+      const include = filter.include || [];
+      const exclude = filter.exclude || [];
+      const titleLc = item.title.toLowerCase();
+      if (include.length && !include.some(k => titleLc.includes(k.toLowerCase()))) continue;
+      if (exclude.some(k => titleLc.includes(k.toLowerCase()))) continue;
 
       if (!item.price?.amount) continue;  // hoppa över annonser utan kontantpris
 
       const url = item.url.startsWith('http') ? item.url : `https://www.coches.net${item.url}`;
       const imageUrl = item.resources?.find(r => r.type === 'IMAGE')?.url ?? null;
+      const versionKeywords = model.coches_net.version_keywords || [];
+      const version = versionKeywords.find(k => item.title.toLowerCase().includes(k.toLowerCase())) ?? null;
+
       allListings.push({
         id: `coches_net:${item.id}`,
         model_id: model.id,
         source: 'coches_net',
         url,
         title: item.title,
+        version,
         year: item.year ?? null,
         km: item.km ?? null,
         price: item.price?.amount ?? null,
