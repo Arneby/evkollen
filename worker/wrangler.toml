@@ -1,0 +1,9 @@
+name = "evkollen-worker"
+main = "src/index.js"
+compatibility_date = "2024-09-23"
+account_id = "9470477318f84f079a2849a9bfdb85f1"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "evkollen"
+database_id = "6167e8fb-4848-4104-bf8b-1712a9373d0c"

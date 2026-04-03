@@ -1,0 +1,272 @@
+---
+const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
+---
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EV Kollen</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/victor-mono@1.5.6/VictorMonoAll.min.css">
+  <style is:global>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Victor Mono', 'Fira Code', 'JetBrains Mono', monospace;
+      background: #f5f5f5;
+      color: #1a1a1a;
+      font-size: 13px;
+    }
+
+    header {
+      background: #1a1a2e;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+    }
+    header h1 { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.02em; }
+    header span { font-size: 0.8rem; opacity: 0.45; }
+
+    main { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+
+    .tabs {
+      display: flex;
+      gap: 0.25rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid #e0e0e0;
+    }
+    .tab {
+      padding: 0.5rem 1.2rem;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: #666;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      font-family: inherit;
+    }
+    .tab.active { color: #1a1a2e; border-bottom-color: #1a1a2e; font-weight: 600; }
+    .tab:hover:not(.active) { color: #333; }
+
+    .stats-bar {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .stat {
+      background: white;
+      border-radius: 8px;
+      padding: 0.8rem 1.2rem;
+      flex: 1;
+      min-width: 120px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .stat-label { font-size: 0.7rem; color: #999; text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-value { font-size: 1.4rem; font-weight: 700; margin-top: 0.2rem; color: #1a1a2e; }
+
+    .table-wrap { overflow-x: auto; }
+    .table-wrap .updated {
+      font-size: 0.72rem;
+      color: #bbb;
+      margin-top: 0.6rem;
+      text-align: right;
+    }
+
+    table {
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    /* Kolumnbredder */
+    th:nth-child(1) { width: 40%; } /* Annons */
+    th:nth-child(2) { width: 15%; } /* Pris */
+    th:nth-child(3) { width:  9%; } /* År */
+    th:nth-child(4) { width: 12%; } /* Km */
+    th:nth-child(5) { width: 12%; } /* Sedd */
+    th:nth-child(6) { width: 12%; } /* Senast */
+
+    thead tr { background: #1a1a2e; color: white; }
+    th {
+      padding: 0.9rem 1.2rem;
+      text-align: left;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      cursor: pointer;
+      user-select: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    th:hover { background: #252545; }
+    th.sorted-asc::after  { content: ' ↑'; opacity: 0.6; }
+    th.sorted-desc::after { content: ' ↓'; opacity: 0.6; }
+
+    td {
+      padding: 0.85rem 1.2rem;
+      border-bottom: 1px solid #f0f0f0;
+      vertical-align: middle;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafafa; }
+
+    .price { font-weight: 700; font-size: 1rem; letter-spacing: -0.02em; }
+    .year-badge {
+      display: inline-block;
+      background: #eef2ff;
+      color: #3b4ea6;
+      border-radius: 4px;
+      padding: 0.15rem 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .muted { color: #888; }
+    .num   { text-align: right; font-variant-numeric: tabular-nums; }
+    a.ad-link { color: #3b4ea6; text-decoration: none; font-weight: 600; }
+    a.ad-link:hover { text-decoration: underline; }
+
+    .loading { text-align: center; padding: 3rem; color: #aaa; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>EV Kollen</h1>
+    <span>KM0 · Spanien</span>
+  </header>
+
+  <main>
+    <div class="tabs" id="tabs"></div>
+    <div class="stats-bar" id="stats"></div>
+    <div id="table-container"><div class="loading">Laddar...</div></div>
+  </main>
+
+  <script define:vars={{ WORKER_URL }}>
+    const MODELS = [
+      { id: 'lynk-01-phev-more', label: 'Lynk 01 More' },
+      { id: 'lynk-08-phev-more', label: 'Lynk 08 More' },
+      { id: 'rr-evoque-p300e',   label: 'Evoque P300e' },
+    ];
+
+    let allData = {};
+    let activeModel = MODELS[0].id;
+    let sortCol = 'price';
+    let sortDir = 'asc';
+
+    const COLS = [
+      { key: 'price',      label: 'Pris',   cls: 'col-price' },
+      { key: 'year',       label: 'År',     cls: 'col-year' },
+      { key: 'km',         label: 'Km',     cls: 'col-km', thClass: 'num' },
+      { key: 'first_seen', label: 'Sedd',   cls: 'col-seen' },
+      { key: 'last_seen',  label: 'Senast', cls: 'col-lastseen' },
+    ];
+
+    function fmt(n) {
+      return n != null ? Number(n).toLocaleString('sv-SE') : '–';
+    }
+
+    function fmtKm(n) {
+      return n != null ? Number(n).toLocaleString('sv-SE').replace(/\s/g, '') : '–';
+    }
+
+    function fmtDate(s) {
+      if (!s) return '–';
+      const [y, m, d] = s.split('-');
+      return `${y.slice(2)}.${m}.${d}`;
+    }
+
+    function renderTabs() {
+      const el = document.getElementById('tabs');
+      el.innerHTML = MODELS.map(m => {
+        const count = allData[m.id] ? ` (${allData[m.id].length})` : '';
+        return `<button class="tab ${m.id === activeModel ? 'active' : ''}" data-id="${m.id}">${m.label}${count}</button>`;
+      }).join('');
+      el.querySelectorAll('.tab').forEach(btn =>
+        btn.addEventListener('click', () => { activeModel = btn.dataset.id; render(); })
+      );
+    }
+
+    function renderStats(listings) {
+      const prices = listings.map(l => l.price).filter(Boolean);
+      const kms = listings.map(l => l.km).filter(v => v != null);
+      const avg = arr => arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : null;
+      document.getElementById('stats').innerHTML = [
+        { label: 'Annonser',   value: listings.length },
+        { label: 'Lägsta',     value: prices.length ? '€' + fmt(Math.min(...prices)) : '–' },
+        { label: 'Högsta',     value: prices.length ? '€' + fmt(Math.max(...prices)) : '–' },
+        { label: 'Snittpris',  value: prices.length ? '€' + fmt(avg(prices)) : '–' },
+        { label: 'Snitt km',   value: kms.length   ? fmt(avg(kms)) + ' km' : '–' },
+      ].map(s => `<div class="stat"><div class="stat-label">${s.label}</div><div class="stat-value">${s.value}</div></div>`).join('');
+    }
+
+    function renderTable(listings) {
+      const sorted = [...listings].sort((a, b) => {
+        let av = a[sortCol], bv = b[sortCol];
+        if (av == null) return 1;
+        if (bv == null) return -1;
+        return sortDir === 'asc' ? (av > bv ? 1 : -1) : (av < bv ? 1 : -1);
+      });
+
+      document.getElementById('table-container').innerHTML = `
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>Annons</th>
+              ${COLS.map(c => `<th data-key="${c.key}" class="${[sortCol === c.key ? 'sorted-' + sortDir : '', c.thClass || ''].join(' ').trim()}">${c.label}</th>`).join('')}
+            </tr></thead>
+            <tbody>
+              ${sorted.map(l => `<tr>
+                <td title="${l.title}"><a class="ad-link" href="/annons?id=${l.id.split(':')[1]}">${l.title}</a></td>
+                <td class="price">${'€' + fmt(l.price)}</td>
+                <td><span class="year-badge">${l.year ?? '–'}</span></td>
+                <td class="muted num">${fmtKm(l.km)}</td>
+                <td class="muted">${fmtDate(l.first_seen)}</td>
+                <td class="muted">${fmtDate(l.last_seen)}</td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+          <p class="updated">Uppdaterat: ${new Date().toLocaleString('sv-SE')}</p>
+        </div>`;
+
+      document.querySelectorAll('th[data-key]').forEach(th =>
+        th.addEventListener('click', () => {
+          sortDir = sortCol === th.dataset.key && sortDir === 'asc' ? 'desc' : 'asc';
+          sortCol = th.dataset.key;
+          renderTable(allData[activeModel] || []);
+        })
+      );
+    }
+
+    function render() {
+      renderTabs();
+      const listings = allData[activeModel] || [];
+      renderStats(listings);
+      renderTable(listings);
+    }
+
+    async function init() {
+      renderTabs();
+      await Promise.all(MODELS.map(async m => {
+        const res = await fetch(`${WORKER_URL}/listings?model_id=${m.id}`);
+        const json = await res.json();
+        allData[m.id] = json.listings || [];
+      }));
+      render();
+    }
+
+    init();
+  </script>
+</body>
+</html>

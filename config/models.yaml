@@ -1,0 +1,30 @@
+models:
+  - id: lynk-01-phev-more
+    make: Lynk & Co
+    model: "01"
+    variant: More
+    powertrain: phev
+    coches_net:
+      make_id: 1404
+      model_id: 1336
+      variant_keyword: "More"   # post-process filter på annonstitel
+
+  - id: lynk-08-phev-more
+    make: Lynk & Co
+    model: "08"
+    variant: More
+    powertrain: phev
+    coches_net:
+      make_id: 1404
+      model_id: 1625
+      variant_keyword: "More"
+
+  - id: rr-evoque-p300e
+    make: Land Rover
+    model: Range Rover Evoque
+    variant: P300e
+    powertrain: phev
+    coches_net:
+      make_id: 24
+      model_id: 994
+      variant_keyword: "P300e"
