@@ -284,7 +284,7 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
       const history = historyData[modelId] || [];
       const card = document.getElementById('chart-card');
 
-      if (history.length < 2) {
+      if (history.length < 1) {
         card.style.display = 'none';
         return;
       }
