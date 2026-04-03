@@ -60,7 +60,8 @@ async function main() {
       if (ONLY_SOURCE && sourceName !== ONLY_SOURCE) continue;
       try {
         const scrape = await getSourceScraper(sourceName);
-        const listings = await scrape(model, sourceConfig, rates);
+        const cfg = { ...sourceConfig, _year_from: model.year ?? null, _year_to: model.year ?? null };
+        const listings = await scrape(model, cfg, rates);
         allListings.push(...listings);
       } catch (err) {
         console.error(`  [${sourceName}] Error: ${err.message}`);

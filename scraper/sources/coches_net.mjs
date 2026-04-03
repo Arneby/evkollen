@@ -84,6 +84,7 @@ export async function scrape(model, cn, rates) {
       const versionFilter = cn.version_filter || [];
       if (versionFilter.length && (!version || !versionFilter.some(f => version.toLowerCase().startsWith(f.toLowerCase())))) continue;
 
+      if (model.year && item.year !== model.year) continue;
       if (!item.price?.amount) continue;
 
       const url = item.url.startsWith('http') ? item.url : `https://www.coches.net${item.url}`;

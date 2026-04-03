@@ -13,9 +13,10 @@ async function fetchPage(w, offset = 0) {
     hits: PAGE_SIZE,
     offset,
   });
-  if (w.fuel_type)    params.set('fuelTypes', w.fuel_type);
-  if (w.mileage_max)  params.set('mileage.max', w.mileage_max);
-  if (w.year_to)      params.set('modelYear.max', w.year_to);
+  if (w.fuel_type)       params.set('fuelTypes', w.fuel_type);
+  if (w.mileage_max)    params.set('mileage.max', w.mileage_max);
+  if (w._year_from)     params.set('modelYear.min', w._year_from);
+  if (w._year_to)       params.set('modelYear.max', w._year_to);
 
   const res = await fetch(`${BASE_URL}?${params}`, { headers: HEADERS });
   if (!res.ok) throw new Error(`wayke API ${res.status}`);
