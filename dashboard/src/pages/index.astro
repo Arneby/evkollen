@@ -8,6 +8,7 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EV Kollen</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/victor-mono@1.5.6/VictorMonoAll.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <style is:global>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -139,6 +140,22 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
     a.ad-link:hover { text-decoration: underline; }
 
     .loading { text-align: center; padding: 3rem; color: #aaa; }
+
+    .chart-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      padding: 1.2rem 1.5rem 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .chart-card h2 {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #999;
+      margin-bottom: 0.8rem;
+    }
+    .chart-card canvas { display: block; }
   </style>
 </head>
 <body>
@@ -150,6 +167,10 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
   <main>
     <div class="tabs" id="tabs"></div>
     <div class="stats-bar" id="stats"></div>
+    <div class="chart-card" id="chart-card" style="display:none">
+      <h2>Snittpris per marknad (€)</h2>
+      <canvas id="price-chart" height="80"></canvas>
+    </div>
     <div id="table-container"><div class="loading">Laddar...</div></div>
   </main>
 
@@ -164,14 +185,16 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
     ];
 
     const SOURCE_META = {
-      coches_net: { flag: '🇪🇸' },
-      wayke:      { flag: '🇸🇪' },
+      coches_net: { flag: '🇪🇸', color: '#3b4ea6' },
+      wayke:      { flag: '🇸🇪', color: '#2a7a4b' },
     };
 
     let allData = {};
+    let historyData = {};
     let activeModel = MODELS[0].id;
     let sortCol = 'price_eur';
     let sortDir = 'asc';
+    let priceChart = null;
 
     const COLS = [
       { key: 'price_eur',  label: 'Pris (€)', cls: 'col-price' },
@@ -257,19 +280,80 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
       );
     }
 
+    function renderChart(modelId) {
+      const history = historyData[modelId] || [];
+      const card = document.getElementById('chart-card');
+
+      if (history.length < 2) {
+        card.style.display = 'none';
+        return;
+      }
+      card.style.display = '';
+
+      // Collect all unique days and sources
+      const days = [...new Set(history.map(r => r.day))].sort();
+      const sources = [...new Set(history.map(r => r.source))];
+
+      const datasets = sources.map(src => {
+        const meta = SOURCE_META[src] || { flag: '', color: '#888' };
+        const byDay = Object.fromEntries(history.filter(r => r.source === src).map(r => [r.day, r.avg_price_eur]));
+        return {
+          label: `${meta.flag} ${src}`,
+          data: days.map(d => byDay[d] ?? null),
+          borderColor: meta.color,
+          backgroundColor: meta.color + '20',
+          tension: 0.3,
+          spanGaps: true,
+          pointRadius: 3,
+        };
+      });
+
+      if (priceChart) priceChart.destroy();
+      priceChart = new Chart(document.getElementById('price-chart'), {
+        type: 'line',
+        data: { labels: days, datasets },
+        options: {
+          responsive: true,
+          interaction: { mode: 'index', intersect: false },
+          scales: {
+            x: { ticks: { font: { family: 'Victor Mono, monospace', size: 11 } } },
+            y: {
+              ticks: {
+                font: { family: 'Victor Mono, monospace', size: 11 },
+                callback: v => '€' + v.toLocaleString('sv-SE'),
+              },
+            },
+          },
+          plugins: {
+            legend: { labels: { font: { family: 'Victor Mono, monospace', size: 11 } } },
+            tooltip: {
+              callbacks: {
+                label: ctx => `${ctx.dataset.label}: €${ctx.parsed.y?.toLocaleString('sv-SE') ?? '–'}`,
+              },
+            },
+          },
+        },
+      });
+    }
+
     function render() {
       renderTabs();
       const listings = allData[activeModel] || [];
       renderStats(listings);
+      renderChart(activeModel);
       renderTable(listings);
     }
 
     async function init() {
       renderTabs();
       await Promise.all(MODELS.map(async m => {
-        const res = await fetch(`${WORKER_URL}/listings?model_id=${m.id}`);
-        const json = await res.json();
-        allData[m.id] = json.listings || [];
+        const [listRes, histRes] = await Promise.all([
+          fetch(`${WORKER_URL}/listings?model_id=${m.id}`),
+          fetch(`${WORKER_URL}/price-history?model_id=${m.id}`),
+        ]);
+        const [listJson, histJson] = await Promise.all([listRes.json(), histRes.json()]);
+        allData[m.id] = listJson.listings || [];
+        historyData[m.id] = histJson.history || [];
       }));
       render();
     }

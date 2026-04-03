@@ -43,6 +43,10 @@ export default {
       return handleSnapshots(request, env);
     }
 
+    if (url.pathname === '/price-history' && request.method === 'GET') {
+      return handlePriceHistory(request, env);
+    }
+
     return new Response('Not found', { status: 404 });
   },
 };
@@ -125,4 +129,27 @@ async function handleSnapshots(request, env) {
   ).bind(listingId).all();
 
   return Response.json({ snapshots: results }, { headers: CORS });
+}
+
+async function handlePriceHistory(request, env) {
+  const url = new URL(request.url);
+  const modelId = url.searchParams.get('model_id');
+  if (!modelId) {
+    return Response.json({ error: 'model_id required' }, { status: 400, headers: CORS });
+  }
+
+  const { results } = await env.DB.prepare(`
+    SELECT
+      date(ps.scraped_at) AS day,
+      l.source,
+      ROUND(AVG(ps.price_eur)) AS avg_price_eur,
+      COUNT(*) AS count
+    FROM price_snapshots ps
+    JOIN listings l ON l.id = ps.listing_id
+    WHERE l.model_id = ?
+    GROUP BY day, l.source
+    ORDER BY day ASC
+  `).bind(modelId).all();
+
+  return Response.json({ history: results }, { headers: CORS });
 }

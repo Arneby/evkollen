@@ -8,6 +8,7 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EV Kollen · Annons</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/victor-mono@1.5.6/VictorMonoAll.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <style is:global>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -79,6 +80,20 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
     .coches-link:hover { background: #252545; }
     .loading { padding: 3rem; text-align: center; color: #aaa; }
     .error   { padding: 2rem; color: #c00; }
+    .chart-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      padding: 1.2rem 1.5rem 1rem;
+      margin-top: 1rem;
+    }
+    .chart-card h2 {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #999;
+      margin-bottom: 0.8rem;
+    }
   </style>
 </head>
 <body>
@@ -129,13 +144,15 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
         { label: 'Senast sedd',    value: fmtDate(l.last_seen) },
       ];
 
+      const linkLabel = l.source === 'wayke' ? 'Visa på Wayke.se →' : 'Visa på Coches.net →';
+
       document.getElementById('content').innerHTML = `
         <div class="card">
           ${l.image_url ? `<img class="card-img" src="${l.image_url}" alt="${l.title}" loading="lazy">` : ''}
           <div class="card-header">
             <div class="title">${l.title}</div>
             ${l.version ? `<div class="version">${l.version}</div>` : ''}
-            <div class="price">€${fmt(l.price)}</div>
+            <div class="price">€${fmt(l.price_eur ?? l.price)}</div>
           </div>
           <div class="fields">
             ${fields.map(f => `
@@ -144,8 +161,53 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
                 <div class="field-value">${f.value}</div>
               </div>`).join('')}
           </div>
-          <a class="coches-link" href="${l.url}" target="_blank" rel="noopener">Visa på Coches.net →</a>
+          <a class="coches-link" href="${l.url}" target="_blank" rel="noopener">${linkLabel}</a>
+        </div>
+        <div class="chart-card" id="chart-card" style="display:none">
+          <h2>Prisutveckling (€)</h2>
+          <canvas id="price-chart" height="80"></canvas>
         </div>`;
+
+      // Fetch and render price history
+      const snapRes = await fetch(`${WORKER_URL}/snapshots?listing_id=${encodeURIComponent(id)}`);
+      const snapJson = await snapRes.json();
+      const snaps = (snapJson.snapshots || []).filter(s => s.price_eur != null);
+
+      if (snaps.length >= 2) {
+        document.getElementById('chart-card').style.display = '';
+        new Chart(document.getElementById('price-chart'), {
+          type: 'line',
+          data: {
+            labels: snaps.map(s => s.scraped_at.split('T')[0]),
+            datasets: [{
+              label: 'Pris (€)',
+              data: snaps.map(s => s.price_eur),
+              borderColor: '#3b4ea6',
+              backgroundColor: '#3b4ea620',
+              tension: 0.3,
+              pointRadius: 3,
+            }],
+          },
+          options: {
+            responsive: true,
+            scales: {
+              x: { ticks: { font: { family: 'Victor Mono, monospace', size: 11 } } },
+              y: {
+                ticks: {
+                  font: { family: 'Victor Mono, monospace', size: 11 },
+                  callback: v => '€' + v.toLocaleString('sv-SE'),
+                },
+              },
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: { label: ctx => `€${ctx.parsed.y?.toLocaleString('sv-SE')}` },
+              },
+            },
+          },
+        });
+      }
     }
 
     init();
