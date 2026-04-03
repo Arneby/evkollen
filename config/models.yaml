@@ -4,65 +4,98 @@ models:
     model: "01"
     variant: More
     powertrain: phev
-    coches_net:
-      make_id: 1404
-      model_id: 1336
-      filter:
-        include: ["More"]
+    sources:
+      coches_net:
+        make_id: 1404
+        model_id: 1336
+        filter:
+          include: ["More"]
 
   - id: lynk-08-phev-more
     make: Lynk & Co
     model: "08"
     variant: More
     powertrain: phev
-    coches_net:
-      make_id: 1404
-      model_id: 1625
-      filter:
-        include: ["More"]
+    sources:
+      coches_net:
+        make_id: 1404
+        model_id: 1625
+        filter:
+          include: ["More"]
 
   - id: rr-evoque-p300e
     make: Land Rover
     model: Range Rover Evoque
     variant: P300e
     powertrain: phev
-    coches_net:
-      make_id: 24
-      model_id: 994
-      filter:
-        include: ["P300e"]
-      version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
-      version_filter: ["R-Dynamic", "Dynamic HSE", "Autobiography"]  # bara dessa trim-nivåer
+    sources:
+      coches_net:
+        make_id: 24
+        model_id: 994
+        filter:
+          include: ["P300e"]
+        version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
+        version_filter: ["R-Dynamic", "Dynamic HSE", "Autobiography"]
+      wayke:
+        manufacturer: "Land Rover"
+        model_series: "Range Rover Evoque"
+        fuel_type: "Bensin+El"
+        mileage_max: 500
+        version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
+        version_filter: ["R-Dynamic", "Dynamic HSE", "Autobiography"]
 
   - id: citroen-ec5-aircross-ev
     make: Citroën
     model: eC5 Aircross
     variant: EV
     powertrain: bev
-    coches_net:
-      make_id: 11
-      model_id: 1668
+    sources:
+      coches_net:
+        make_id: 11
+        model_id: 1668
+      wayke:
+        manufacturer: "Citroën"
+        model_series: "ë-C5 Aircross"
+        fuel_type: "El"
+        mileage_max: 500
 
   - id: bmw-ix3-g08
     make: BMW
     model: iX3
     variant: G08
     powertrain: bev
-    coches_net:
-      make_id: 7
-      model_id: 1324
-      year_to: 2025
-      filter:
-        include: ["M Sport"]
-        exclude: ["50 xDrive"]   # Neue Klasse
+    sources:
+      coches_net:
+        make_id: 7
+        model_id: 1324
+        year_to: 2025
+        filter:
+          include: ["M Sport"]
+          exclude: ["50 xDrive"]   # Neue Klasse
+      wayke:
+        manufacturer: "BMW"
+        model_series: "iX3"
+        fuel_type: "El"
+        mileage_max: 500
+        year_to: 2025
+        filter:
+          exclude: ["50"]          # Neue Klasse
 
   - id: vw-id4
     make: Volkswagen
     model: ID.4
     variant: ""
     powertrain: bev
-    coches_net:
-      make_id: 47
-      model_id: 1334
-      filter:
-        include: ["Pro", "GTX"]
+    sources:
+      coches_net:
+        make_id: 47
+        model_id: 1334
+        filter:
+          include: ["Pro", "GTX"]
+      wayke:
+        manufacturer: "Volkswagen"
+        model_series: "ID.4"
+        fuel_type: "El"
+        mileage_max: 500
+        filter:
+          include: ["Pro", "GTX"]
