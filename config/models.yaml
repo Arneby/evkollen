@@ -97,14 +97,14 @@ models:
         filter:
           include: ["P300e"]
         version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
-        version_filter: ["R-Dynamic", "Dynamic HSE", "Autobiography"]
+        version_filter: ["R-Dynamic", "Dynamic HSE", "Dynamic SE", "Autobiography"]
       wayke:
         manufacturer: "Land Rover"
         model_series: "Discovery Sport"
         fuel_type: "Bensin+El"
         mileage_max: 500
         version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
-        version_filter: ["R-Dynamic", "Dynamic HSE", "Autobiography"]
+        version_filter: ["R-Dynamic", "Dynamic HSE", "Dynamic SE", "Autobiography"]
 
   - id: vw-id4
     make: Volkswagen

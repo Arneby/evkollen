@@ -57,6 +57,10 @@ async function fetchPage(cn, page) {
   return res.json();
 }
 
+function normalizeTitle(s) {
+  return s.replace(/R[\s-]?Dynamic/gi, 'R-Dynamic');
+}
+
 export async function scrape(model, cn, rates) {
   const allListings = [];
   let page = 1;
@@ -74,12 +78,13 @@ export async function scrape(model, cn, rates) {
     const exclude = filter.exclude || [];
 
     for (const item of items) {
-      const titleLc = item.title.toLowerCase();
+      const normTitle = normalizeTitle(item.title);
+      const titleLc = normTitle.toLowerCase();
       if (include.length && !include.some(k => titleLc.includes(k.toLowerCase()))) continue;
       if (exclude.some(k => titleLc.includes(k.toLowerCase()))) continue;
 
       const versionKeywords = cn.version_keywords || [];
-      const version = versionKeywords.find(k => item.title.toLowerCase().includes(k.toLowerCase())) ?? null;
+      const version = versionKeywords.find(k => titleLc.includes(k.toLowerCase())) ?? null;
 
       const versionFilter = cn.version_filter || [];
       if (versionFilter.length && (!version || !versionFilter.some(f => version.toLowerCase().startsWith(f.toLowerCase())))) continue;

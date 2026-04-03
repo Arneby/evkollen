@@ -23,6 +23,10 @@ async function fetchPage(w, offset = 0) {
   return res.json();
 }
 
+function normalizeTitle(s) {
+  return s.replace(/R[\s-]?Dynamic/gi, 'R-Dynamic');
+}
+
 export async function scrape(model, w, rates) {
   const allListings = [];
   let offset = 0;
@@ -41,14 +45,14 @@ export async function scrape(model, w, rates) {
     const exclude = filter.exclude || [];
 
     for (const doc of docs) {
-      const searchText = `${doc.title} ${doc.shortDescription ?? ''}`.toLowerCase();
+      const normText = normalizeTitle(`${doc.title} ${doc.shortDescription ?? ''}`);
+      const searchText = normText.toLowerCase();
 
       if (include.length && !include.some(k => searchText.includes(k.toLowerCase()))) continue;
       if (exclude.some(k => searchText.includes(k.toLowerCase()))) continue;
 
       const versionKeywords = w.version_keywords || [];
-      const descText = `${doc.shortDescription ?? ''} ${doc.title}`;
-      const version = versionKeywords.find(k => descText.toLowerCase().includes(k.toLowerCase())) ?? null;
+      const version = versionKeywords.find(k => searchText.includes(k.toLowerCase())) ?? null;
 
       const versionFilter = w.version_filter || [];
       if (versionFilter.length && (!version || !versionFilter.some(f => version.toLowerCase().startsWith(f.toLowerCase())))) continue;
