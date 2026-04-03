@@ -11,6 +11,11 @@ models:
         model_id: 1336
         filter:
           include: ["More"]
+      bytbil:
+        make: "Lynk & Co"
+        model: "01"
+        filter:
+          include: ["More"]
 
   - id: lynk-08-phev-more
     make: Lynk & Co
@@ -22,6 +27,11 @@ models:
       coches_net:
         make_id: 1404
         model_id: 1625
+        filter:
+          include: ["More"]
+      bytbil:
+        make: "Lynk & Co"
+        model: "08"
         filter:
           include: ["More"]
 
@@ -46,43 +56,12 @@ models:
         mileage_max: 500
         version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
         version_filter: ["R-Dynamic", "Dynamic HSE", "Autobiography"]
-
-  - id: citroen-ec5-aircross-ev
-    make: Citroën
-    model: eC5 Aircross
-    variant: EV
-    powertrain: bev
-    year: 2025
-    sources:
-      coches_net:
-        make_id: 11
-        model_id: 1668
-      wayke:
-        manufacturer: "Citroën"
-        model_series: "ë-C5 Aircross"
-        fuel_type: "El"
-        mileage_max: 500
-
-  - id: bmw-ix3-g08
-    make: BMW
-    model: iX3
-    variant: G08
-    powertrain: bev
-    year: 2025
-    sources:
-      coches_net:
-        make_id: 7
-        model_id: 1324
-        filter:
-          include: ["M Sport"]
-          exclude: ["50 xDrive"]   # Neue Klasse
-      wayke:
-        manufacturer: "BMW"
-        model_series: "iX3"
-        fuel_type: "El"
-        mileage_max: 500
-        filter:
-          exclude: ["50"]          # Neue Klasse
+      bytbil:
+        make: "Land Rover"
+        model: "Range Rover Evoque"
+        fuel_type: "Elhybrid"
+        version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
+        version_filter: ["R-Dynamic", "Dynamic HSE", "Autobiography"]
 
   - id: lr-disco-sport-p300e
     make: Land Rover
@@ -105,6 +84,59 @@ models:
         mileage_max: 500
         version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
         version_filter: ["R-Dynamic", "Dynamic HSE", "Dynamic SE", "Autobiography"]
+      bytbil:
+        make: "Land Rover"
+        model: "Discovery Sport"
+        fuel_type: "Elhybrid"
+        version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
+        version_filter: ["R-Dynamic", "Dynamic HSE", "Dynamic SE", "Autobiography"]
+
+  - id: citroen-ec5-aircross-ev
+    make: Citroën
+    model: eC5 Aircross
+    variant: EV
+    powertrain: bev
+    year: 2025
+    sources:
+      coches_net:
+        make_id: 11
+        model_id: 1668
+      wayke:
+        manufacturer: "Citroën"
+        model_series: "ë-C5 Aircross"
+        fuel_type: "El"
+        mileage_max: 500
+      bytbil:
+        make: "Citroën"
+        model: "eC5 Aircross"
+        fuel_type: "El"
+
+  - id: bmw-ix3-g08
+    make: BMW
+    model: iX3
+    variant: G08
+    powertrain: bev
+    year: 2025
+    sources:
+      coches_net:
+        make_id: 7
+        model_id: 1324
+        filter:
+          include: ["M Sport"]
+          exclude: ["50 xDrive"]   # Neue Klasse
+      wayke:
+        manufacturer: "BMW"
+        model_series: "iX3"
+        fuel_type: "El"
+        mileage_max: 500
+        filter:
+          exclude: ["50"]          # Neue Klasse
+      bytbil:
+        make: "BMW"
+        model: "iX3"
+        fuel_type: "El"
+        filter:
+          exclude: ["50"]          # Neue Klasse
 
   - id: vw-id4
     make: Volkswagen
@@ -123,5 +155,11 @@ models:
         model_series: "ID.4"
         fuel_type: "El"
         mileage_max: 500
+        filter:
+          include: ["Pro", "GTX"]
+      bytbil:
+        make: "Volkswagen"
+        model: "ID.4"
+        fuel_type: "El"
         filter:
           include: ["Pro", "GTX"]
