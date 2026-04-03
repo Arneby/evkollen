@@ -50,6 +50,37 @@ async function fetchEurRates() {
   return { SEK: data.rates.SEK, EUR: 1 };
 }
 
+// Deduplicate cross-source listings for the same physical car.
+// Keeps the first source encountered (sources order in YAML matters).
+// Match criteria: same year + km within 500 km + dealer first word matches.
+function deduplicateListings(listings) {
+  const SWEDISH_SOURCES = new Set(['wayke', 'bytbil']);
+  const kept = [];
+  const dropped = [];
+
+  for (const a of listings) {
+    if (!SWEDISH_SOURCES.has(a.source)) { kept.push(a); continue; }
+
+    const isDup = kept.some(b => {
+      if (!SWEDISH_SOURCES.has(b.source) || b.source === a.source) return false;
+      if (a.year !== b.year) return false;
+      if (a.km != null && b.km != null && Math.abs(a.km - b.km) > 500) return false;
+      const wordA = (a.dealer_name ?? '').split(/\s+/)[0].toLowerCase();
+      const wordB = (b.dealer_name ?? '').split(/\s+/)[0].toLowerCase();
+      return wordA.length > 2 && wordA === wordB;
+    });
+
+    if (isDup) dropped.push(a);
+    else kept.push(a);
+  }
+
+  if (dropped.length > 0) {
+    console.log(`  [dedup] Removed ${dropped.length} cross-source duplicate(s):`);
+    for (const d of dropped) console.log(`    − ${d.source} | ${d.title} | ${d.km ?? '?'} km | ${d.dealer_name ?? ''}`);
+  }
+  return kept;
+}
+
 async function main() {
   const config = yaml.load(fs.readFileSync(path.resolve(__dirname, '../config/models.yaml'), 'utf8'));
   console.log(`evkollen scraper — ${DRY_RUN ? 'DRY RUN' : 'LIVE'}`);
@@ -78,11 +109,13 @@ async function main() {
       }
     }
 
-    if (allListings.length > 0) {
-      if (DRY_RUN) console.log(`  [dry-run] ${allListings.length} listings:`);
-      await sendToWorker(allListings);
+    const deduped = ONLY_SOURCE ? allListings : deduplicateListings(allListings);
+
+    if (deduped.length > 0) {
+      if (DRY_RUN) console.log(`  [dry-run] ${deduped.length} listings:`);
+      await sendToWorker(deduped);
     } else {
-      console.log('  No matching listings.');
+      console.log('  No matching listings (after dedup).');
     }
 
     if (i < config.models.length - 1) {
