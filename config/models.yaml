@@ -62,6 +62,15 @@ models:
         fuel_type: "Elhybrid"
         version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
         version_filter: ["R-Dynamic", "Dynamic HSE", "Autobiography"]
+      mobile_de:
+        make_id: 14800    # Land Rover
+        # model_id for Evoque not known — uses description pre-filter instead
+        description: "Range Rover Evoque P300e"
+        fuel: HYBRID
+        filter:
+          include: ["P300e"]
+        version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
+        version_filter: ["R-Dynamic", "Dynamic HSE", "Autobiography"]
 
   - id: lr-disco-sport-p300e
     make: Land Rover
@@ -90,6 +99,15 @@ models:
         fuel_type: "Elhybrid"
         version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
         version_filter: ["R-Dynamic", "Dynamic HSE", "Dynamic SE", "Autobiography"]
+      mobile_de:
+        make_id: 14800    # Land Rover
+        model_id: 11      # Discovery Sport (confirmed from search URL)
+        description: "P300e"
+        fuel: HYBRID
+        filter:
+          include: ["P300e"]
+        version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
+        version_filter: ["R-Dynamic", "Dynamic HSE", "Dynamic SE", "Autobiography"]
 
   - id: citroen-ec5-aircross-ev
     make: Citroën
@@ -110,6 +128,10 @@ models:
         make: "Citroën"
         model: "eC5 Aircross"
         fuel_type: "El"
+      mobile_de:
+        make_id: 5900     # Citroën
+        description: "C5 Aircross"
+        fuel: ELECTRICITY
 
   - id: bmw-ix3-g08
     make: BMW
@@ -137,6 +159,12 @@ models:
         fuel_type: "El"
         filter:
           exclude: ["50"]          # Neue Klasse
+      mobile_de:
+        make_id: 3500     # BMW
+        description: "iX3"
+        fuel: ELECTRICITY
+        filter:
+          exclude: ["50"]          # Neue Klasse
 
   - id: vw-id4
     make: Volkswagen
@@ -161,5 +189,11 @@ models:
         make: "Volkswagen"
         model: "ID.4"
         fuel_type: "El"
+        filter:
+          include: ["Pro", "GTX"]
+      mobile_de:
+        make_id: 25200    # Volkswagen
+        description: "ID.4"
+        fuel: ELECTRICITY
         filter:
           include: ["Pro", "GTX"]

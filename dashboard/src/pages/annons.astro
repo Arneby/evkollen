@@ -144,7 +144,12 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
         { label: 'Senast sedd',    value: fmtDate(l.last_seen) },
       ];
 
-      const linkLabel = l.source === 'wayke' ? 'Visa på Wayke.se →' : 'Visa på Coches.net →';
+      const SOURCE_LABELS = {
+        wayke:     'Visa på Wayke.se →',
+        bytbil:    'Visa på Bytbil.com →',
+        mobile_de: 'Visa på Mobile.de →',
+      };
+      const linkLabel = SOURCE_LABELS[l.source] ?? 'Visa annons →';
 
       document.getElementById('content').innerHTML = `
         <div class="card">
