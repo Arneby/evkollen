@@ -7,11 +7,6 @@
     "scrape:dry": "node scraper.mjs --dry-run"
   },
   "dependencies": {
-    "cheerio": "^1.0.0",
-    "js-yaml": "^4.1.0",
-    "node-fetch": "^3.3.2",
-    "playwright": "^1.59.1",
-    "playwright-extra": "^4.3.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.2"
+    "js-yaml": "^4.1.0"
   }
 }
