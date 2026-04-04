@@ -16,6 +16,10 @@ models:
         model: "01"
         filter:
           include: ["More"]
+      subito:
+        query: "Lynk 01 PHEV More"
+        filter:
+          include: ["01", "More"]
 
   - id: lynk-08-phev-more
     make: Lynk & Co
@@ -34,6 +38,10 @@ models:
         model: "08"
         filter:
           include: ["More"]
+      subito:
+        query: "Lynk 08 PHEV"
+        filter:
+          include: ["08"]
 
   - id: rr-evoque-p300e
     make: Land Rover
@@ -62,15 +70,11 @@ models:
         fuel_type: "Elhybrid"
         version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
         version_filter: ["R-Dynamic", "Dynamic HSE", "Autobiography"]
-      mobile_de:
-        make_id: 14800    # Land Rover
-        # model_id for Evoque not known — uses description pre-filter instead
-        description: "Range Rover Evoque P300e"
-        fuel: HYBRID
+      subito:
+        make_slug: "land-rover"
+        model_slug: "range-rover-evoque"
         filter:
-          include: ["P300e"]
-        version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
-        version_filter: ["R-Dynamic", "Dynamic HSE", "Autobiography"]
+          include: ["PHEV", "P300e"]
 
   - id: lr-disco-sport-p300e
     make: Land Rover
@@ -99,15 +103,11 @@ models:
         fuel_type: "Elhybrid"
         version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
         version_filter: ["R-Dynamic", "Dynamic HSE", "Dynamic SE", "Autobiography"]
-      mobile_de:
-        make_id: 14800    # Land Rover
-        model_id: 11      # Discovery Sport (confirmed from search URL)
-        description: "P300e"
-        fuel: HYBRID
+      subito:
+        make_slug: "land-rover"
+        model_slug: "discovery-sport"
         filter:
-          include: ["P300e"]
-        version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
-        version_filter: ["R-Dynamic", "Dynamic HSE", "Dynamic SE", "Autobiography"]
+          include: ["PHEV", "P300e"]
 
   - id: citroen-ec5-aircross-ev
     make: Citroën
@@ -128,10 +128,11 @@ models:
         make: "Citroën"
         model: "eC5 Aircross"
         fuel_type: "El"
-      mobile_de:
-        make_id: 5900     # Citroën
-        description: "C5 Aircross"
-        fuel: ELECTRICITY
+      subito:
+        make_slug: "citroen"
+        model_slug: "c5-aircross"
+        filter:
+          include: ["elettric", "e-C5", "eC5"]
 
   - id: bmw-ix3-g08
     make: BMW
@@ -159,10 +160,9 @@ models:
         fuel_type: "El"
         filter:
           exclude: ["50"]          # Neue Klasse
-      mobile_de:
-        make_id: 3500     # BMW
-        description: "iX3"
-        fuel: ELECTRICITY
+      subito:
+        make_slug: "bmw"
+        model_slug: "ix3"
         filter:
           exclude: ["50"]          # Neue Klasse
 
@@ -191,9 +191,8 @@ models:
         fuel_type: "El"
         filter:
           include: ["Pro", "GTX"]
-      mobile_de:
-        make_id: 25200    # Volkswagen
-        description: "ID.4"
-        fuel: ELECTRICITY
+      subito:
+        make_slug: "volkswagen"
+        query: "ID.4"
         filter:
-          include: ["Pro", "GTX"]
+          include: ["ID.4", "Pro", "GTX"]
