@@ -103,7 +103,11 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
   </header>
 
   <main>
-    <a class="back" href="/">← Tillbaka</a>
+    <a class="back" id="back-link" href="/">← Tillbaka</a>
+    <script>
+      const modelId = new URLSearchParams(location.search).get('model_id');
+      if (modelId) document.getElementById('back-link').href = `/?model=${encodeURIComponent(modelId)}`;
+    </script>
     <div id="content"><div class="loading">Laddar...</div></div>
   </main>
 
