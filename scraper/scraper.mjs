@@ -82,7 +82,7 @@ function deduplicateListings(listings) {
 }
 
 async function main() {
-  const config = yaml.load(fs.readFileSync(path.resolve(__dirname, '../config/models.yaml'), 'utf8'));
+  const config = yaml.load(fs.readFileSync(path.resolve(__dirname, './config/models.yaml'), 'utf8'));
   console.log(`evkollen scraper — ${DRY_RUN ? 'DRY RUN' : 'LIVE'}`);
   if (ONLY_SOURCE) console.log(`Source filter: ${ONLY_SOURCE}`);
   console.log(`Models: ${config.models.length}`);
