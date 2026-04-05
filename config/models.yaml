@@ -201,6 +201,8 @@ models:
         make_slug: "bmw"
         model_slug: "ix3"
         fuel_type: "E"
+        year_from: 2024
+        year_to: 2025
         filter:
           exclude: ["50", "Neue Klasse"]
 

@@ -8,7 +8,7 @@ const HEADERS = {
 
 const MAX_PAGES = 5;
 
-function buildUrl(s, year, page) {
+function buildUrl(s, yearFrom, yearTo, page) {
   const path = s.model_slug
     ? `${BASE_URL}/${s.make_slug}/${s.model_slug}`
     : `${BASE_URL}/${s.make_slug}`;
@@ -17,10 +17,8 @@ function buildUrl(s, year, page) {
   params.set('atype', 'C');
   params.set('cy', s.country ?? 'D');
   if (s.fuel_type) params.set('fuelc', s.fuel_type);
-  if (year) {
-    params.set('fregfrom', year);
-    params.set('fregto', year);
-  }
+  if (yearFrom) params.set('fregfrom', yearFrom);
+  if (yearTo)   params.set('fregto',   yearTo);
   if (s.query) params.set('q', s.query);
   if (page > 1) params.set('page', page);
   return `${path}?${params}`;
@@ -41,12 +39,14 @@ function parseYear(firstReg) {
 
 export async function scrape(model, s, rates) {
   const allListings = [];
-  const year = model.year ?? null;
+  const year     = model.year ?? null;
+  const yearFrom = s.year_from ?? year;
+  const yearTo   = s.year_to   ?? year;
   let page = 1;
   let totalPages = 1;
 
   while (page <= Math.min(totalPages, MAX_PAGES)) {
-    const url = buildUrl(s, year, page);
+    const url = buildUrl(s, yearFrom, yearTo, page);
     const res = await fetch(url, { headers: HEADERS });
     if (!res.ok) throw new Error(`autoscout24.de HTTP ${res.status} for ${url}`);
     const html = await res.text();
@@ -81,7 +81,8 @@ export async function scrape(model, s, rates) {
       const itemYear = parseYear(tracking.firstRegistration);
 
       if (!priceEur || priceEur < 5000) continue;
-      if (year && itemYear !== null && itemYear !== year) continue;
+      if (itemYear !== null && yearFrom && itemYear < yearFrom) continue;
+      if (itemYear !== null && yearTo   && itemYear > yearTo)   continue;
 
       const versionKeywords = s.version_keywords || [];
       const version = versionKeywords.find(k => titleLc.includes(k.toLowerCase())) ?? null;
