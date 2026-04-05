@@ -165,6 +165,7 @@ models:
         fuel_type: "E"
         filter:
           include: ["EV", "Electr", "électr"]
+          exclude: ["MHEV"]
 
   - id: bmw-ix3-g08
     make: BMW
