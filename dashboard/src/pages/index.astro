@@ -265,7 +265,7 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
             </tr></thead>
             <tbody>
               ${sorted.map(l => `<tr>
-                <td title="${l.title}"><a class="ad-link" href="/annons?id=${encodeURIComponent(l.id)}&model_id=${encodeURIComponent(m.id)}">${SOURCE_META[l.source]?.flag ?? ''} ${l.title}</a></td>
+                <td title="${l.title}"><a class="ad-link" href="/annons?id=${encodeURIComponent(l.id)}&model_id=${encodeURIComponent(activeModel)}">${SOURCE_META[l.source]?.flag ?? ''} ${l.title}</a></td>
                 <td class="price">€${fmt(l.price_eur ?? l.price)}</td>
                 <td><span class="year-badge">${l.year ?? '–'}</span></td>
                 <td class="muted num">${fmtKm(l.km)}</td>
