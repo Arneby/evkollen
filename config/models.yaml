@@ -20,6 +20,12 @@ models:
         query: "Lynk 01 PHEV More"
         filter:
           include: ["01", "More"]
+      autoscout:
+        make_slug: "lynk-%26-co"
+        model_slug: "01"
+        fuel_type: "H"
+        filter:
+          include: ["More"]
 
   - id: lynk-08-phev-more
     make: Lynk & Co
@@ -42,6 +48,12 @@ models:
         query: "Lynk 08 PHEV"
         filter:
           include: ["08"]
+      autoscout:
+        make_slug: "lynk-%26-co"
+        model_slug: "08"
+        fuel_type: "H"
+        filter:
+          include: ["More"]
 
   - id: rr-evoque-p300e
     make: Land Rover
@@ -75,6 +87,13 @@ models:
         model_slug: "range-rover-evoque"
         filter:
           include: ["PHEV", "P300e"]
+      autoscout:
+        make_slug: "land-rover"
+        model_slug: "range-rover-evoque"
+        filter:
+          include: ["P300e"]
+        version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
+        version_filter: ["R-Dynamic", "Dynamic HSE", "Autobiography"]
 
   - id: lr-disco-sport-p300e
     make: Land Rover
@@ -108,6 +127,13 @@ models:
         model_slug: "discovery-sport"
         filter:
           include: ["PHEV", "P300e"]
+      autoscout:
+        make_slug: "land-rover"
+        model_slug: "discovery-sport"
+        filter:
+          include: ["P300e"]
+        version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
+        version_filter: ["R-Dynamic", "Dynamic HSE", "Dynamic SE", "Autobiography"]
 
   - id: citroen-ec5-aircross-ev
     make: Citroën
@@ -133,6 +159,10 @@ models:
         model_slug: "c5-aircross"
         filter:
           include: ["elettric", "e-C5", "eC5"]
+      autoscout:
+        make_slug: "citroen"
+        model_slug: "c5-aircross"
+        fuel_type: "E"
 
   - id: bmw-ix3-g08
     make: BMW
@@ -163,6 +193,12 @@ models:
       subito:
         make_slug: "bmw"
         model_slug: "ix3"
+        filter:
+          exclude: ["50"]          # Neue Klasse
+      autoscout:
+        make_slug: "bmw"
+        model_slug: "ix3"
+        fuel_type: "E"
         filter:
           exclude: ["50"]          # Neue Klasse
 
@@ -196,3 +232,9 @@ models:
         query: "ID.4"
         filter:
           include: ["ID.4", "Pro", "GTX"]
+      autoscout:
+        make_slug: "volkswagen"
+        model_slug: "id.4"
+        fuel_type: "E"
+        filter:
+          include: ["Pro", "GTX"]

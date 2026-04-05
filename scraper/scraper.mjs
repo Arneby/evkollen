@@ -82,7 +82,11 @@ function deduplicateListings(listings) {
 }
 
 async function main() {
-  const config = yaml.load(fs.readFileSync(path.resolve(__dirname, './config/models.yaml'), 'utf8'));
+  const configPath = ['./config/models.yaml', '../config/models.yaml']
+    .map(p => path.resolve(__dirname, p))
+    .find(p => fs.existsSync(p));
+  if (!configPath) throw new Error('models.yaml not found');
+  const config = yaml.load(fs.readFileSync(configPath, 'utf8'));
   console.log(`evkollen scraper — ${DRY_RUN ? 'DRY RUN' : 'LIVE'}`);
   if (ONLY_SOURCE) console.log(`Source filter: ${ONLY_SOURCE}`);
   console.log(`Models: ${config.models.length}`);
