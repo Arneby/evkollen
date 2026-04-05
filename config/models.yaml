@@ -163,6 +163,8 @@ models:
         make_slug: "citroen"
         model_slug: "c5-aircross"
         fuel_type: "E"
+        filter:
+          include: ["EV", "Electr", "électr"]
 
   - id: bmw-ix3-g08
     make: BMW
@@ -200,7 +202,7 @@ models:
         model_slug: "ix3"
         fuel_type: "E"
         filter:
-          exclude: ["50"]          # Neue Klasse
+          exclude: ["50", "Neue Klasse"]
 
   - id: vw-id4
     make: Volkswagen
