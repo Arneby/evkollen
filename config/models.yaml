@@ -172,7 +172,7 @@ models:
     model: iX3
     variant: G08
     powertrain: bev
-    year: 2025
+    year: 2024
     sources:
       coches_net:
         make_id: 7
@@ -202,8 +202,6 @@ models:
         make_slug: "bmw"
         model_slug: "ix3"
         fuel_type: "E"
-        year_from: 2024
-        year_to: 2025
         filter:
           exclude: ["50", "Neue Klasse"]
 
