@@ -140,15 +140,15 @@ async function handlePriceHistory(request, env) {
 
   const { results } = await env.DB.prepare(`
     SELECT
-      date(ps.scraped_at) AS day,
+      strftime('%Y-W%W', ps.scraped_at) AS week,
       l.source,
       ROUND(AVG(ps.price_eur)) AS avg_price_eur,
       COUNT(*) AS count
     FROM price_snapshots ps
     JOIN listings l ON l.id = ps.listing_id
     WHERE l.model_id = ?
-    GROUP BY day, l.source
-    ORDER BY day ASC
+    GROUP BY week, l.source
+    ORDER BY week ASC
   `).bind(modelId).all();
 
   return Response.json({ history: results }, { headers: CORS });

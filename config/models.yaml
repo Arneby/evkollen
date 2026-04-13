@@ -14,6 +14,7 @@ models:
       bytbil:
         make: "Lynk & Co"
         model: "01"
+        mileage_max: 10000
         filter:
           include: ["More"]
       subito:
@@ -42,6 +43,7 @@ models:
       bytbil:
         make: "Lynk & Co"
         model: "08"
+        mileage_max: 10000
         filter:
           include: ["More"]
       subito:
@@ -73,13 +75,14 @@ models:
         manufacturer: "Land Rover"
         model_series: "Range Rover Evoque"
         fuel_type: "Bensin+El"
-        mileage_max: 500
+        mileage_max: 10000
         version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
         version_filter: ["R-Dynamic", "Dynamic HSE", "Autobiography"]
       bytbil:
         make: "Land Rover"
         model: "Range Rover Evoque"
         fuel_type: "Elhybrid"
+        mileage_max: 10000
         version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
         version_filter: ["R-Dynamic", "Dynamic HSE", "Autobiography"]
       subito:
@@ -113,13 +116,14 @@ models:
         manufacturer: "Land Rover"
         model_series: "Discovery Sport"
         fuel_type: "Bensin+El"
-        mileage_max: 500
+        mileage_max: 10000
         version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
         version_filter: ["R-Dynamic", "Dynamic HSE", "Dynamic SE", "Autobiography"]
       bytbil:
         make: "Land Rover"
         model: "Discovery Sport"
         fuel_type: "Elhybrid"
+        mileage_max: 10000
         version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
         version_filter: ["R-Dynamic", "Dynamic HSE", "Dynamic SE", "Autobiography"]
       subito:
@@ -149,11 +153,12 @@ models:
         manufacturer: "Citroën"
         model_series: "ë-C5 Aircross"
         fuel_type: "El"
-        mileage_max: 500
+        mileage_max: 10000
       bytbil:
         make: "Citroën"
         model: "eC5 Aircross"
         fuel_type: "El"
+        mileage_max: 10000
       subito:
         make_slug: "citroen"
         model_slug: "c5-aircross"
@@ -184,13 +189,14 @@ models:
         manufacturer: "BMW"
         model_series: "iX3"
         fuel_type: "El"
-        mileage_max: 500
+        mileage_max: 10000
         filter:
           exclude: ["50"]          # Neue Klasse
       bytbil:
         make: "BMW"
         model: "iX3"
         fuel_type: "El"
+        mileage_max: 10000
         filter:
           exclude: ["50"]          # Neue Klasse
       subito:
@@ -204,6 +210,33 @@ models:
         fuel_type: "E"
         filter:
           exclude: ["50", "Neue Klasse"]
+
+  - id: peugeot-e3008-bev
+    make: Peugeot
+    model: e-3008
+    variant: ""
+    powertrain: bev
+    year: 2025
+    sources:
+      wayke:
+        manufacturer: "Peugeot"
+        model_series: "e-3008"
+        fuel_type: "El"
+        mileage_max: 10000
+      bytbil:
+        make: "Peugeot"
+        model: "e-3008"
+        fuel_type: "El"
+        mileage_max: 10000
+      subito:
+        make_slug: "peugeot"
+        model_slug: "3008"
+        filter:
+          include: ["e-3008", "elettric", "electric"]
+      autoscout:
+        make_slug: "peugeot"
+        model_slug: "e-3008"
+        fuel_type: "E"
 
   - id: vw-id4
     make: Volkswagen
@@ -221,13 +254,14 @@ models:
         manufacturer: "Volkswagen"
         model_series: "ID.4"
         fuel_type: "El"
-        mileage_max: 500
+        mileage_max: 10000
         filter:
           include: ["Pro", "GTX"]
       bytbil:
         make: "Volkswagen"
         model: "ID.4"
         fuel_type: "El"
+        mileage_max: 10000
         filter:
           include: ["Pro", "GTX"]
       subito:
