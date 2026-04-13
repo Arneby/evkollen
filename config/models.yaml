@@ -235,7 +235,7 @@ models:
           include: ["e-3008", "elettric", "electric"]
       autoscout:
         make_slug: "peugeot"
-        model_slug: "e-3008"
+        model_slug: "3008"
         fuel_type: "E"
 
   - id: vw-id4
