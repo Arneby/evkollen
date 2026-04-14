@@ -28,19 +28,27 @@ db/
 
 ## Bilmodeller (config/models.yaml)
 
-8 modeller: Lynk & Co 01/08 (PHEV), Land Rover Evoque/Discovery Sport P300e (PHEV), Citroën eC5 Aircross (BEV), BMW iX3 G08 (BEV), Peugeot e-3008 (BEV), VW ID.4 (BEV)
+8 modeller: Lynk & Co 01/08 (PHEV), Land Rover Evoque/Discovery Sport P300e/P270e (PHEV), Citroën eC5 Aircross (BEV), BMW iX3 G08 (BEV), Peugeot e-3008 (BEV), VW ID.4 (BEV)
+
+### Årsintervall
+Modeller använder `year_from`/`year_to` (inte `year`). Scraper.mjs läser dessa och skickar `_year_from`/`_year_to` till varje källmodul. Alla scrapers stöder intervall i API-anrop och loop-filtrering.
 
 ## Källmoduler
 
 Varje modul exporterar `async scrape(model, sourceConfig, rates)` → listings[].
 
-| Källa | Metod | Market |
-|-------|-------|--------|
-| wayke | JSON API | Sverige |
-| bytbil | HTML-parsing (GTM dataLayer) | Sverige |
-| coches_net | JSON API (POST) | Spanien (KM0) |
-| subito | HTML-parsing (`__NEXT_DATA__`) | Italien |
-| autoscout | HTML-parsing (`__NEXT_DATA__`) | Tyskland/EU |
+| Källa | Metod | Market | Notering |
+|-------|-------|--------|----------|
+| wayke | JSON API | Sverige | model_series är case-sensitive (t.ex. "E-3008" inte "e-3008") |
+| bytbil | HTML-parsing (GTM dataLayer) | Sverige | LR-modeller: model="Range Rover Evoque" / "Discovery Sport" |
+| coches_net | JSON API (POST) | Spanien (KM0) | Söker bara KM0-bilar (offerTypeIds: [2]) |
+| subito | HTML-parsing (`__NEXT_DATA__`) | Italien | Paginering kan ge dubbletter — dedup sker internt |
+| autoscout | HTML-parsing (`__NEXT_DATA__`) | Tyskland/EU | fuel_type: "E"=El, "H"=Hybrid/PHEV |
+
+### Kända marknadsbegränsningar
+- **Citroën eC5 Aircross**: finns inte på wayke/bytbil/coches_net ännu (för ny modell)
+- **BMW iX3**: inga KM0 på coches_net (ingen spansk lagerbild)
+- **Subito**: italienska annonser använder sällan "P300e"/"P270e" — filtrera på "PHEV", "hybrid", "ibrida" istället
 
 ## Worker API
 
