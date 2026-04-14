@@ -240,12 +240,14 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
       const prices = listings.map(l => l.price_eur ?? l.price).filter(Boolean);
       const kms = listings.map(l => l.km).filter(v => v != null);
       const avg = arr => arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : null;
+      const lastSeen = listings.map(l => l.last_seen).filter(Boolean).sort().pop() ?? null;
       document.getElementById('stats').innerHTML = [
         { label: 'Annonser',   value: listings.length },
         { label: 'Lägsta',     value: prices.length ? '€' + fmt(Math.min(...prices)) : '–' },
         { label: 'Högsta',     value: prices.length ? '€' + fmt(Math.max(...prices)) : '–' },
         { label: 'Snittpris',  value: prices.length ? '€' + fmt(avg(prices)) : '–' },
         { label: 'Snitt km',   value: kms.length   ? fmt(avg(kms)) + ' km' : '–' },
+        { label: 'Skrapades',  value: fmtDate(lastSeen) },
       ].map(s => `<div class="stat"><div class="stat-label">${s.label}</div><div class="stat-value">${s.value}</div></div>`).join('');
     }
 
@@ -275,7 +277,7 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
               </tr>`).join('')}
             </tbody>
           </table>
-          <p class="updated">Uppdaterat: ${new Date().toLocaleString('sv-SE')}</p>
+          <p class="updated">Skrapades: ${fmtDate([...listings].map(l => l.last_seen).filter(Boolean).sort().pop())}</p>
         </div>`;
 
       document.querySelectorAll('th[data-key]').forEach(th =>
