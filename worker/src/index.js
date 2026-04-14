@@ -140,7 +140,7 @@ async function handlePriceHistory(request, env) {
 
   const { results } = await env.DB.prepare(`
     SELECT
-      strftime('%Y-W%W', ps.scraped_at) AS week,
+      strftime('%Y-v%W', ps.scraped_at) AS week,
       l.source,
       ROUND(AVG(ps.price_eur)) AS avg_price_eur,
       COUNT(*) AS count
