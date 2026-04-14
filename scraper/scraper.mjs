@@ -105,7 +105,7 @@ async function main() {
       if (ONLY_SOURCE && sourceName !== ONLY_SOURCE) continue;
       try {
         const scrape = await getSourceScraper(sourceName);
-        const cfg = { ...sourceConfig, _year_from: model.year ?? null, _year_to: model.year ?? null };
+        const cfg = { ...sourceConfig, _year_from: model.year_from ?? model.year ?? null, _year_to: model.year_to ?? model.year ?? null };
         const listings = await scrape(model, cfg, rates);
         allListings.push(...listings);
       } catch (err) {

@@ -4,7 +4,8 @@ models:
     model: "01"
     variant: More
     powertrain: phev
-    year: 2025
+    year_from: 2025
+    year_to: 2026
     sources:
       coches_net:
         make_id: 1404
@@ -33,7 +34,8 @@ models:
     model: "08"
     variant: More
     powertrain: phev
-    year: 2025
+    year_from: 2025
+    year_to: 2026
     sources:
       coches_net:
         make_id: 1404
@@ -60,91 +62,88 @@ models:
   - id: rr-evoque-p300e
     make: Land Rover
     model: Range Rover Evoque
-    variant: P300e
+    variant: P300e/P270e
     powertrain: phev
-    year: 2025
+    year_from: 2025
+    year_to: 2026
     sources:
       coches_net:
         make_id: 24
         model_id: 994
         filter:
-          include: ["P300e"]
+          include: ["P300e", "P270e"]
         version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
-        version_filter: ["R-Dynamic", "Dynamic HSE", "Autobiography"]
       wayke:
         manufacturer: "Land Rover"
         model_series: "Range Rover Evoque"
         fuel_type: "Bensin+El"
         mileage_max: 10000
         version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
-        version_filter: ["R-Dynamic", "Dynamic HSE", "Autobiography"]
       bytbil:
         make: "Land Rover"
         model: "Range Rover Evoque"
         fuel_type: "Elhybrid"
         mileage_max: 10000
         version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
-        version_filter: ["R-Dynamic", "Dynamic HSE", "Autobiography"]
       subito:
         make_slug: "land-rover"
         model_slug: "range-rover-evoque"
         filter:
-          include: ["PHEV", "P300e"]
+          include: ["PHEV", "hybrid", "ibrida"]
+          exclude: ["2.0D", "D4M"]
       autoscout:
         make_slug: "land-rover"
         model_slug: "range-rover-evoque"
+        fuel_type: "H"
         filter:
-          include: ["P300e"]
+          include: ["P300e", "P270e"]
         version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
-        version_filter: ["R-Dynamic", "Dynamic HSE", "Autobiography"]
 
   - id: lr-disco-sport-p300e
     make: Land Rover
     model: Discovery Sport
-    variant: P300e
+    variant: P300e/P270e
     powertrain: phev
-    year: 2025
+    year_from: 2025
+    year_to: 2026
     sources:
       coches_net:
         make_id: 24
         model_id: 1134
         filter:
-          include: ["P300e"]
+          include: ["PHEV", "P300e", "P270e"]
         version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
-        version_filter: ["R-Dynamic", "Dynamic HSE", "Dynamic SE", "Autobiography"]
       wayke:
         manufacturer: "Land Rover"
         model_series: "Discovery Sport"
         fuel_type: "Bensin+El"
         mileage_max: 10000
         version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
-        version_filter: ["R-Dynamic", "Dynamic HSE", "Dynamic SE", "Autobiography"]
       bytbil:
         make: "Land Rover"
         model: "Discovery Sport"
         fuel_type: "Elhybrid"
         mileage_max: 10000
         version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
-        version_filter: ["R-Dynamic", "Dynamic HSE", "Dynamic SE", "Autobiography"]
       subito:
         make_slug: "land-rover"
         model_slug: "discovery-sport"
         filter:
-          include: ["PHEV", "P300e"]
+          include: ["PHEV", "P300e", "P270e"]
       autoscout:
         make_slug: "land-rover"
         model_slug: "discovery-sport"
         filter:
-          include: ["P300e"]
+          include: ["P300e", "P270e"]
         version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
-        version_filter: ["R-Dynamic", "Dynamic HSE", "Dynamic SE", "Autobiography"]
 
   - id: citroen-ec5-aircross-ev
     make: Citroën
     model: eC5 Aircross
     variant: EV
     powertrain: bev
-    year: 2025
+    year_from: 2025
+    year_to: 2026
     sources:
       coches_net:
         make_id: 11
@@ -177,7 +176,8 @@ models:
     model: iX3
     variant: G08
     powertrain: bev
-    year: 2024
+    year_from: 2024
+    year_to: 2026
     sources:
       coches_net:
         make_id: 7
@@ -216,11 +216,12 @@ models:
     model: e-3008
     variant: ""
     powertrain: bev
-    year: 2025
+    year_from: 2025
+    year_to: 2026
     sources:
       wayke:
         manufacturer: "Peugeot"
-        model_series: "e-3008"
+        model_series: "E-3008"
         fuel_type: "El"
         mileage_max: 10000
       bytbil:
@@ -243,7 +244,8 @@ models:
     model: ID.4
     variant: ""
     powertrain: bev
-    year: 2025
+    year_from: 2025
+    year_to: 2026
     sources:
       coches_net:
         make_id: 47
