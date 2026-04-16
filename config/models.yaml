@@ -49,9 +49,9 @@ models:
         filter:
           include: ["More"]
       subito:
-        query: "Lynk 08 PHEV"
+        query: "Lynk & Co 08"
         filter:
-          include: ["08"]
+          include: ["More"]
       autoscout:
         make_slug: "lynk-%26-co"
         model_slug: "08"
@@ -111,7 +111,7 @@ models:
         make_id: 24
         model_id: 1134
         filter:
-          include: ["PHEV", "P300e", "P270e"]
+          include: ["PHEV", "hybrid", "ibrida", "P300e", "P270e"]
         version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
       wayke:
         manufacturer: "Land Rover"
