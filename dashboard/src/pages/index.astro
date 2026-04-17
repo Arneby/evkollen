@@ -314,7 +314,27 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
           periodMeta.set(r.period, { granularity: r.granularity, label: fmtPeriodLabel(r.period, r.granularity) });
       }
       const periods = [...periodMeta.keys()];
-      const labels  = periods.map(p => periodMeta.get(p).label);
+
+      // Numeric x-axis: weekly periods spaced 2 units apart, daily periods 1 unit apart
+      const xValues  = new Map(); // period → numeric x
+      const xToLabel = {};        // x → display label
+      let numWeeks = 0;
+      for (const p of periods) { if (periodMeta.get(p).granularity === 'week') numWeeks++; }
+      let weekIdx = 0, dayIdx = 0;
+      for (const p of periods) {
+        const { granularity, label } = periodMeta.get(p);
+        const xv = granularity === 'week'
+          ? weekIdx++ * 2
+          : (numWeeks > 0 ? (numWeeks - 1) * 2 + 2 : 0) + dayIdx++;
+        xValues.set(p, xv);
+        xToLabel[xv] = label;
+      }
+      const maxX       = periods.length > 0 ? xValues.get(periods[periods.length - 1]) : 0;
+      const lastWeekX  = numWeeks > 0 ? (numWeeks - 1) * 2 : null;
+      const firstDayX  = numWeeks > 0 && periods.some(p => periodMeta.get(p).granularity === 'day')
+        ? (numWeeks - 1) * 2 + 2 : null;
+      const separatorX = lastWeekX !== null && firstDayX !== null
+        ? (lastWeekX + firstDayX) / 2 : null;
 
       const sources = [...new Set(normalised.map(r => r.source))];
 
@@ -328,20 +348,16 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
         }
         return {
           name: `${meta.flag} ${meta.country ?? src}`,
-          data: periods.map(p => byPeriod[p] ? Math.round(byPeriod[p].sum / byPeriod[p].n) : null),
+          data: periods.map(p => ({
+            x: xValues.get(p),
+            y: byPeriod[p] ? Math.round(byPeriod[p].sum / byPeriod[p].n) : null,
+          })),
         };
       });
 
       const sourcesLabels = sources.map(src => (SOURCE_META[src] || {}).sourcesLabel ?? src);
       const colors        = sources.map(src => (SOURCE_META[src] || { color: '#888' }).color);
       const markerStrokes = sources.map(src => (SOURCE_META[src] || { markerStroke: '#888' }).markerStroke);
-
-      // Separator between last weekly and first daily period
-      const hasWeeks = periods.some(p => periodMeta.get(p).granularity === 'week');
-      const hasDay   = periods.some(p => periodMeta.get(p).granularity === 'day');
-      const firstDayLabel = (hasWeeks && hasDay)
-        ? periodMeta.get(periods.find(p => periodMeta.get(p).granularity === 'day')).label
-        : null;
 
       if (priceChart) { priceChart.destroy(); priceChart = null; }
 
@@ -364,12 +380,18 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
           fillOpacity: 1,
           hover: { size: 9, sizeOffset: 0 },
         },
-        annotations: firstDayLabel ? {
-          xaxis: [{ x: firstDayLabel, borderColor: '#cccccc', strokeDashArray: 5, borderWidth: 1 }]
+        annotations: separatorX !== null ? {
+          xaxis: [{ x: separatorX, borderColor: '#cccccc', strokeDashArray: 5, borderWidth: 1 }]
         } : {},
         xaxis: {
-          categories: labels,
-          labels: { style: { fontFamily: "'Victor Mono', monospace", fontSize: '12px' } },
+          type: 'numeric',
+          min: 0,
+          max: maxX,
+          tickAmount: maxX,
+          labels: {
+            formatter: v => xToLabel[Math.round(v)] ?? '',
+            style: { fontFamily: "'Victor Mono', monospace", fontSize: '12px' },
+          },
           axisBorder: { show: false },
           axisTicks: { show: false },
         },
@@ -382,6 +404,7 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
         tooltip: {
           shared: true,
           intersect: false,
+          x: { formatter: v => xToLabel[Math.round(v)] ?? '' },
           y: { formatter: v => v != null ? '€' + Math.round(v).toLocaleString('sv-SE') : '–' },
           style: { fontFamily: "'Victor Mono', monospace", fontSize: '12px' },
         },
