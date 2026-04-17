@@ -168,8 +168,8 @@ models:
         model_slug: "c5-aircross"
         fuel_type: "E"
         filter:
-          include: ["EV", "Electr", "électr"]
-          exclude: ["MHEV"]
+          include: ["EV", "Electr", "électr", "210"]
+          exclude: ["MHEV", "e-DCS6", "Hybrid 145", "Hybrid 136"]
 
   - id: bmw-ix3-g08
     make: BMW
