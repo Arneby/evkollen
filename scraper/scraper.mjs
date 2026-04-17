@@ -33,14 +33,23 @@ async function sendToWorker(listings) {
     }
     return;
   }
-  const res = await fetch(`${WORKER_URL}/ingest`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'X-Secret': WORKER_SECRET },
-    body: JSON.stringify({ listings }),
-  });
-  if (!res.ok) throw new Error(`Worker ${res.status}: ${await res.text()}`);
-  const json = await res.json();
-  console.log(`  Worker: ${json.inserted} inserted, ${json.updated} updated`);
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const res = await fetch(`${WORKER_URL}/ingest`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Secret': WORKER_SECRET },
+        body: JSON.stringify({ listings }),
+      });
+      if (!res.ok) throw new Error(`Worker ${res.status}: ${await res.text()}`);
+      const json = await res.json();
+      console.log(`  Worker: ${json.inserted} inserted, ${json.updated} updated`);
+      return;
+    } catch (err) {
+      if (attempt === 3) throw err;
+      console.warn(`  Worker attempt ${attempt} failed (${err.message}), retrying...`);
+      await new Promise(r => setTimeout(r, 3000 * attempt));
+    }
+  }
 }
 
 async function fetchEurRates() {
