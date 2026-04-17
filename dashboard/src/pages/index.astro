@@ -289,6 +289,12 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
       );
     }
 
+    function fmtPeriodLabel(period, granularity) {
+      if (granularity === 'week') return period.replace(/^\d{4}-/, '');
+      const [, m, d] = period.split('-');
+      return `${parseInt(d)}/${parseInt(m)}`;
+    }
+
     function renderChart(modelId) {
       const history = historyData[modelId] || [];
       const card = document.getElementById('chart-card');
@@ -301,27 +307,41 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
         SWEDISH_SOURCES.has(r.source) ? { ...r, source: 'sverige' } : r
       );
 
-      const weeks = [...new Set(normalised.map(r => r.week))].sort();
+      // Build ordered period list (already sorted by sort_key from API)
+      const periodMeta = new Map(); // period → { granularity, label }
+      for (const r of normalised) {
+        if (!periodMeta.has(r.period))
+          periodMeta.set(r.period, { granularity: r.granularity, label: fmtPeriodLabel(r.period, r.granularity) });
+      }
+      const periods = [...periodMeta.keys()];
+      const labels  = periods.map(p => periodMeta.get(p).label);
+
       const sources = [...new Set(normalised.map(r => r.source))];
 
       const series = sources.map(src => {
         const meta = SOURCE_META[src] || { flag: '', color: '#888', name: src };
-        const byWeek = {};
+        const byPeriod = {};
         for (const r of normalised.filter(r => r.source === src)) {
-          if (!byWeek[r.week]) byWeek[r.week] = { sum: 0, n: 0 };
-          byWeek[r.week].sum += r.avg_price_eur * r.count;
-          byWeek[r.week].n   += r.count;
+          if (!byPeriod[r.period]) byPeriod[r.period] = { sum: 0, n: 0 };
+          byPeriod[r.period].sum += r.avg_price_eur * r.count;
+          byPeriod[r.period].n   += r.count;
         }
         return {
           name: `${meta.flag} ${meta.country ?? src}`,
-          data: weeks.map(w => byWeek[w] ? Math.round(byWeek[w].sum / byWeek[w].n) : null),
+          data: periods.map(p => byPeriod[p] ? Math.round(byPeriod[p].sum / byPeriod[p].n) : null),
         };
       });
 
       const sourcesLabels = sources.map(src => (SOURCE_META[src] || {}).sourcesLabel ?? src);
-
       const colors        = sources.map(src => (SOURCE_META[src] || { color: '#888' }).color);
       const markerStrokes = sources.map(src => (SOURCE_META[src] || { markerStroke: '#888' }).markerStroke);
+
+      // Separator between last weekly and first daily period
+      const hasWeeks = periods.some(p => periodMeta.get(p).granularity === 'week');
+      const hasDay   = periods.some(p => periodMeta.get(p).granularity === 'day');
+      const firstDayLabel = (hasWeeks && hasDay)
+        ? periodMeta.get(periods.find(p => periodMeta.get(p).granularity === 'day')).label
+        : null;
 
       if (priceChart) { priceChart.destroy(); priceChart = null; }
 
@@ -344,8 +364,11 @@ const WORKER_URL = 'https://evkollen-worker.gurka.workers.dev';
           fillOpacity: 1,
           hover: { size: 9, sizeOffset: 0 },
         },
+        annotations: firstDayLabel ? {
+          xaxis: [{ x: firstDayLabel, borderColor: '#cccccc', strokeDashArray: 5, borderWidth: 1 }]
+        } : {},
         xaxis: {
-          categories: weeks,
+          categories: labels,
           labels: { style: { fontFamily: "'Victor Mono', monospace", fontSize: '12px' } },
           axisBorder: { show: false },
           axisTicks: { show: false },
