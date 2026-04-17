@@ -82,7 +82,7 @@ models:
       bytbil:
         make: "Land Rover"
         model: "Range Rover Evoque"
-        fuel_type: "Elhybrid"
+        fuel_type: "Laddhybrid"
         mileage_max: 10000
         version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
       subito:
@@ -122,7 +122,7 @@ models:
       bytbil:
         make: "Land Rover"
         model: "Discovery Sport"
-        fuel_type: "Elhybrid"
+        fuel_type: "Laddhybrid"
         mileage_max: 10000
         version_keywords: ["Autobiography", "R-Dynamic HSE", "R-Dynamic SE", "R-Dynamic S", "R-Dynamic", "Dynamic HSE", "Dynamic SE", "Dynamic", "SE", "S"]
       subito:
@@ -150,12 +150,12 @@ models:
         model_id: 1668
       wayke:
         manufacturer: "Citroën"
-        model_series: "ë-C5 Aircross"
+        model_series: "C5 Aircross"
         fuel_type: "El"
         mileage_max: 10000
       bytbil:
         make: "Citroën"
-        model: "eC5 Aircross"
+        model: "C5 Aircross"
         fuel_type: "El"
         mileage_max: 10000
       subito:

@@ -18,7 +18,7 @@ function buildUrl(b, yearFrom, yearTo, page) {
     'SortParams.IsAscending': 'False',
     Page: page,
   });
-  if (b.fuel_type) params.set('FuelTypes', b.fuel_type);
+  if (b.fuel_type) params.set('Fuels', b.fuel_type);
   if (b.mileage_max != null) params.set('MilageRange.To', b.mileage_max);
   return `${BASE_URL}/bil?${params}`;
 }
