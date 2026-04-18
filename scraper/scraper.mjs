@@ -26,7 +26,7 @@ async function getSourceScraper(name) {
   return mod.scrape;
 }
 
-async function sendToWorker(listings) {
+async function sendToWorker(listings, models) {
   if (DRY_RUN) {
     for (const l of listings) {
       console.log(`    ${l.source} | ${l.title} | ${l.version ?? '–'} | ${l.year ?? '?'} | ${l.km != null ? l.km.toLocaleString() + ' km' : '?'} | ${l.price != null ? l.price.toLocaleString() + ' ' + l.currency : '?'} | ${l.dealer_name ?? ''}`);
@@ -38,7 +38,7 @@ async function sendToWorker(listings) {
       const res = await fetch(`${WORKER_URL}/ingest`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'X-Secret': WORKER_SECRET },
-        body: JSON.stringify({ listings, models: config.models.map(m => ({ id: m.id, make: m.make, model: m.model, powertrain: m.powertrain, label: m.label ?? null })) }),
+        body: JSON.stringify({ listings, models }),
       });
       if (!res.ok) throw new Error(`Worker ${res.status}: ${await res.text()}`);
       const json = await res.json();
@@ -96,6 +96,7 @@ async function main() {
     .find(p => fs.existsSync(p));
   if (!configPath) throw new Error('models.yaml not found');
   const config = yaml.load(fs.readFileSync(configPath, 'utf8'));
+  const modelsPayload = config.models.map(m => ({ id: m.id, make: m.make, model: m.model, powertrain: m.powertrain, label: m.label ?? null }));
   console.log(`evkollen scraper — ${DRY_RUN ? 'DRY RUN' : 'LIVE'}`);
   if (ONLY_SOURCE) console.log(`Source filter: ${ONLY_SOURCE}`);
   console.log(`Models: ${config.models.length}`);
@@ -126,7 +127,7 @@ async function main() {
 
     if (deduped.length > 0) {
       if (DRY_RUN) console.log(`  [dry-run] ${deduped.length} listings:`);
-      await sendToWorker(deduped);
+      await sendToWorker(deduped, modelsPayload);
     } else {
       console.log('  No matching listings (after dedup).');
     }
